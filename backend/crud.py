@@ -1,12 +1,11 @@
 from sqlalchemy.orm import Session
-from . import models, schemas
+from . import models
 
-def get_auctions(db: Session):
-    return db.query(models.Auction).all()
+def get_auctions(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Auction).offset(skip).limit(limit).all()
 
-def create_auction(db: Session, auction: schemas.AuctionCreate):
-    db_auction = models.Auction(**auction.dict())
-    db.add(db_auction)
+def create_auction(db: Session, auction: models.Auction):
+    db.add(auction)
     db.commit()
-    db.refresh(db_auction)
-    return db_auction
+    db.refresh(auction)
+    return auction

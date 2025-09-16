@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Float, Boolean
-from backend.database import Base
+from .database import Base
 
 class Auction(Base):
     __tablename__ = "auctions"
