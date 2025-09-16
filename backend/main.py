@@ -1,17 +1,25 @@
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends
 from sqlalchemy.orm import Session
-from . import models, schemas, crud
-from .database import engine, get_db
+from backend.database import Base, engine, get_db
+from backend import models
 
-# Crear tablas automáticamente si no existen
-models.Base.metadata.create_all(bind=engine)
+# Crear tablas si no existen
+Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Subastas API")
+app = FastAPI(title="Square Auctions API")
 
-@app.get("/auctions", response_model=list[schemas.Auction])
-def read_auctions(db: Session = Depends(get_db)):
-    return crud.get_auctions(db)
+@app.get("/")
+def root():
+    return {"message": "API de Subastas funcionando!"}
 
-@app.post("/auctions", response_model=schemas.Auction)
-def create_auction(auction: schemas.AuctionCreate, db: Session = Depends(get_db)):
-    return crud.create_auction(db, auction)
+@app.post("/auctions/")
+def create_auction(title: str, description: str, starting_price: float, db: Session = Depends(get_db)):
+    auction = models.Auction(title=title, description=description, starting_price=starting_price)
+    db.add(auction)
+    db.commit()
+    db.refresh(auction)
+    return auction
+
+@app.get("/auctions/")
+def list_auctions(db: Session = Depends(get_db)):
+    return db.query(models.Auction).all()

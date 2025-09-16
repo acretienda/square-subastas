@@ -1,20 +1,9 @@
 services:
   - type: web
-    name: backend
+    name: square-auctions-backend
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install -r backend/requirements.txt
     startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        value: "postgresql://usuario:contraseña@host:puerto/subastas"
-      - key: SECRET_KEY
-        value: "tu_secret_jwt"
-    autoDeploy: true
-
-  - type: web
-    name: frontend
-    env: node
-    plan: starter
-    buildCommand: "cd frontend && npm install && npm run build"
-    startCommand: "cd frontend && npm run preview -- --port $PORT"
-    autoDeploy: true
+        value: "postgresql://TU_USUARIO:TU_CONTRASEÑA@TU_HOST:5432/subastas_db"
