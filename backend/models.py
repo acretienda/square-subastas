@@ -1,11 +1,11 @@
-from sqlalchemy import Column, Integer, String, Float, Boolean
-from .database import Base
+from sqlalchemy import Column, Integer, String, Float
+from database import Base
 
-class Auction(Base):
-    __tablename__ = "auctions"
+class Product(Base):
+    __tablename__ = "products"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String, index=True)
-    description = Column(String)
-    starting_price = Column(Float)
-    active = Column(Boolean, default=True)
+    name = Column(String(255), nullable=False)
+    description = Column(String(500), nullable=True)
+    price = Column(Float, nullable=False)
+    stock = Column(Integer, default=0)
