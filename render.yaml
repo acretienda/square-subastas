@@ -1,9 +1,16 @@
+# render.yaml
 services:
   - type: web
-    name: square-auctions-backend
+    name: square-auctions
     env: python
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: uvicorn backend.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: DATABASE_URL
-        value: "postgresql://subastas_db_user:fJc1OootrjKeyIHxaIsj6ps0DUnjhY9r@dpg-d33j79idbo4c73b97s1g-a:5432/subastas_db"
+        fromDatabase:
+          name: subastas_db
+          property: connectionString
+  - type: database
+    name: subastas_db
+    databaseName: subastas_db
+    plan: starter
