@@ -1,10 +1,10 @@
 services:
   - type: web
-    name: subastas-backend
-    env: python
+    name: square-subastas
+    runtime: python
     plan: free
-    buildCommand: pip install -r backend/requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: DATABASE_URL
-        value: postgresql://user_subastas_db:ymB6UlzVr9AouYVN9BUbSOVwKAYfFLBv@dpg-d37ik73uibrs7393iu50-a/subastas_db_9nmw
+      - key: PYTHON_VERSION
+        value: 3.11.9
