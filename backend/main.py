@@ -1,16 +1,10 @@
-from fastapi import FastAPI
-from database import engine, Base
-import models
+from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
 
-# Crear tablas si no existen
-Base.metadata.create_all(bind=engine)
+# URL interna de Render (la que me diste)
+DATABASE_URL = "postgresql://user_subastas_db:ymB6UlzVr9AouYVN9BUbSOVwKAYfFLBv@dpg-d37ik73uibrs7393iu50-a/subastas_db_9nmw"
 
-app = FastAPI()
-
-@app.get("/")
-def read_root():
-    return {"message": "🚀 Bienvenido a la API de Subastas con Render y PostgreSQL"}
-
-@app.get("/health")
-def health():
-    return {"status": "ok"}
+engine = create_engine(DATABASE_URL)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base()
