@@ -1,9 +1,12 @@
-from sqlalchemy import Column, Integer, String
-from database import Base
+from sqlalchemy import Column, Integer, String, Float, DateTime
+from config import Base
+from datetime import datetime
 
-class User(Base):
-    __tablename__ = "users"
+class Auction(Base):
+    __tablename__ = "auctions"
 
     id = Column(Integer, primary_key=True, index=True)
-    username = Column(String, unique=True, index=True, nullable=False)
-    email = Column(String, unique=True, index=True, nullable=False)
+    title = Column(String, index=True)
+    description = Column(String)
+    starting_price = Column(Float)
+    created_at = Column(DateTime, default=datetime.utcnow)
