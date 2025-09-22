@@ -1,66 +1,29 @@
 from pydantic import BaseModel
 from typing import Optional
-from datetime import datetime
 
-
-# ===============================
-# Usuarios
-# ===============================
-class UserBase(BaseModel):
+class UserCreate(BaseModel):
     username: str
-    email: str
-
-
-class UserCreate(UserBase):
     password: str
 
+class UserLogin(BaseModel):
+    username: str
+    password: str
 
-class UserResponse(UserBase):
+class UserOut(BaseModel):
     id: int
-    created_at: datetime
-
+    username: str
     class Config:
-        from_attributes = True
+        orm_mode = True
 
-
-# ===============================
-# Subastas
-# ===============================
-class AuctionBase(BaseModel):
+class AuctionCreate(BaseModel):
     title: str
-    description: Optional[str] = None
-    starting_price: float
+    start_price: float
 
-
-class AuctionCreate(AuctionBase):
-    pass
-
-
-class AuctionResponse(AuctionBase):
+class AuctionOut(BaseModel):
     id: int
-    created_at: datetime
+    title: str
+    start_price: float
+    current_price: float
     owner_id: int
-
     class Config:
-        from_attributes = True
-
-
-# ===============================
-# Pujas
-# ===============================
-class BidBase(BaseModel):
-    amount: float
-
-
-class BidCreate(BidBase):
-    pass
-
-
-class BidResponse(BidBase):
-    id: int
-    auction_id: int
-    bidder_id: int
-    created_at: datetime
-
-    class Config:
-        from_attributes = True
+        orm_mode = True
