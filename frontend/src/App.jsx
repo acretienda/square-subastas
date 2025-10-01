@@ -1,71 +1,47 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
 
-const API_BASE = "https://square-subastas.onrender.com";
+import React, { useEffect, useState } from "react";
+
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function App() {
   const [auctions, setAuctions] = useState([]);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [startingPrice, setStartingPrice] = useState("");
-
-  const fetchAuctions = async () => {
-    try {
-      const res = await axios.get(`${API_BASE}/auctions/`);
-      setAuctions(res.data);
-    } catch (err) {
-      console.error("Error fetching auctions", err);
-    }
-  };
-
-  const createAuction = async () => {
-    try {
-      await axios.post(`${API_BASE}/auctions/`, {
-        title,
-        description,
-        starting_price: parseFloat(startingPrice)
-      });
-      setTitle("");
-      setDescription("");
-      setStartingPrice("");
-      fetchAuctions();
-    } catch (err) {
-      console.error("Error creating auction", err);
-    }
-  };
-
-  const deleteAuction = async (id) => {
-    try {
-      await axios.delete(`${API_BASE}/auctions/${id}`);
-      fetchAuctions();
-    } catch (err) {
-      console.error("Error deleting auction", err);
-    }
-  };
 
   useEffect(() => {
-    fetchAuctions();
+    fetch(`${API_URL}/auctions/`)
+      .then(res => res.json())
+      .then(data => setAuctions(data))
+      .catch(err => console.error("Error cargando subastas:", err));
   }, []);
 
+  const handleBid = (auctionId) => {
+    console.log("💸 Pujando en subasta:", auctionId);
+    alert("Puja enviada (simulada) 💸");
+  };
+
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
-      <h1 style={{ fontSize: "24px", fontWeight: "bold" }}>📊 Panel Admin - Subastas</h1>
-
-      <h2 style={{ marginTop: "20px" }}>➕ Crear nueva subasta</h2>
-      <input placeholder="Título" value={title} onChange={(e) => setTitle(e.target.value)} />
-      <input placeholder="Descripción" value={description} onChange={(e) => setDescription(e.target.value)} />
-      <input placeholder="Precio inicial" type="number" value={startingPrice} onChange={(e) => setStartingPrice(e.target.value)} />
-      <button onClick={createAuction}>Crear</button>
-
-      <h2 style={{ marginTop: "20px" }}>📦 Lista de subastas</h2>
-      <ul>
-        {auctions.map((a) => (
-          <li key={a.id}>
-            <strong>{a.title}</strong> - {a.description} - 💰 {a.starting_price}
-            <button onClick={() => deleteAuction(a.id)} style={{ marginLeft: "10px", color: "red" }}>Eliminar</button>
-          </li>
-        ))}
-      </ul>
+    <div className="max-w-4xl mx-auto py-10 px-4">
+      <h1 className="text-3xl font-bold mb-6 text-center text-blue-700">
+        🏷️ Subastas en Vivo
+      </h1>
+      {auctions.length === 0 ? (
+        <p className="text-gray-500 text-center">No hay subastas disponibles.</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {auctions.map((a) => (
+            <div key={a.id} className="bg-white shadow-md rounded-2xl p-6">
+              <h2 className="text-xl font-semibold text-gray-800">{a.title}</h2>
+              <p className="text-gray-600">Precio inicial: {a.starting_price}€</p>
+              <p className="text-gray-600">Estado: {a.active ? "Activa ✅" : "Cerrada ❌"}</p>
+              <button
+                onClick={() => handleBid(a.id)}
+                className="mt-4 w-full bg-blue-600 text-white py-2 rounded-xl hover:bg-blue-700"
+              >
+                Pujar
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
